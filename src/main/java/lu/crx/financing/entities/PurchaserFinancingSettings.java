@@ -39,4 +39,7 @@ public class PurchaserFinancingSettings implements Serializable {
     @Basic(optional = false)
     private int annualRateInBps;
 
+    @ManyToOne(optional = false)
+    private Purchaser purchaser;
+
 }

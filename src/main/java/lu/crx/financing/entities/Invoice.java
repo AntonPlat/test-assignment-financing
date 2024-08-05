@@ -55,4 +55,12 @@ public class Invoice implements Serializable {
      */
     @Basic(optional = false)
     private long valueInCents;
+
+    /**
+     * Indicates whether the invoice has been financed.
+     * This field is set to true after the invoice has been successfully financed,
+     * preventing it from being financed again in subsequent application runs.
+     */
+    @Basic(optional = false)
+    private boolean financed;
 }
