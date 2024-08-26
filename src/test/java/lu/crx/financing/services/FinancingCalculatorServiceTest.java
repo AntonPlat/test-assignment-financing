@@ -1,6 +1,6 @@
 package lu.crx.financing.services;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -9,10 +9,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class FinancingCalculatorServiceTest {
 
-    private static FinancingCalculatorService financingCalculatorService;
+    private FinancingCalculatorService financingCalculatorService;
 
-    @BeforeAll
-    public static void initTest() {
+    @BeforeEach
+    public void init() {
         financingCalculatorService = new FinancingCalculatorService();
     }
 
@@ -48,5 +48,27 @@ public class FinancingCalculatorServiceTest {
         long actualEarlyPaymentAmount = financingCalculatorService.calculateEarlyPaymentAmount(amount, rate);
 
         assertEquals(expectedEarlyPaymentAmount, actualEarlyPaymentAmount);
+    }
+
+    @Test
+    public void calculateFinancingTermPastDate() {
+        LocalDate today = LocalDate.of(2023, 5, 27);
+        LocalDate maturityDate = LocalDate.of(2023, 5, 20);
+        long expectedTerm = -7;
+
+        long actualTerm = financingCalculatorService.calculateFinancingTerm(today, maturityDate);
+
+        assertEquals(expectedTerm, actualTerm);
+    }
+
+    @Test
+    public void calculateFinancingRateHighRate() {
+        int annualRateInBps = 10000;
+        long financingTermInDays = 360;
+        int expectedRate = 10000;
+
+        int actualRate = financingCalculatorService.calculateFinancingRate(annualRateInBps, financingTermInDays);
+
+        assertEquals(expectedRate, actualRate);
     }
 }

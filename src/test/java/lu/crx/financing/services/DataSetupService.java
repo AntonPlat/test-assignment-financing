@@ -4,6 +4,7 @@ import lu.crx.financing.entities.Creditor;
 import lu.crx.financing.entities.Invoice;
 import lu.crx.financing.entities.Purchaser;
 import lu.crx.financing.entities.PurchaserFinancingSettings;
+import lu.crx.financing.entities.enums.InvoiceStatus;
 import lu.crx.financing.repositories.InvoiceRepository;
 import lu.crx.financing.repositories.PurchaserFinancingSettingsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public class DataSetupService {
     private EntityManager entityManager;
 
     @Transactional
-    public void setupMockData() {
+    public void setupMockData(int numbersUnpaidInvoices, int numbersPaidInvoices) {
         // Create mock Creditor
         Creditor creditor = new Creditor();
         creditor.setName("Test Creditor");
@@ -51,28 +52,28 @@ public class DataSetupService {
         // Save PurchaserFinancingSettings
         purchaserFinancingSettingsRepository.save(settings);
 
-        // Create 10,000 unpaid invoices
-        List<Invoice> invoices = IntStream.range(0, 10000)
+        // Create unpaid invoices
+        List<Invoice> invoices = IntStream.range(0, numbersUnpaidInvoices)
                 .mapToObj(i -> {
                     Invoice invoice = new Invoice();
                     invoice.setCreditor(creditor);
                     invoice.setValueInCents(100000); // Example invoice value
                     invoice.setMaturityDate(LocalDate.now().plusDays(30)); // Example maturity date
-                    invoice.setFinanced(false);
+                    invoice.setStatus(InvoiceStatus.NOT_FINANCED);
                     return invoice;
                 })
                 .collect(Collectors.toList());
 
         invoiceRepository.saveAll(invoices);
 
-        // Create 1,000,000 financed invoices
-        List<Invoice> financedInvoices = IntStream.range(0, 1000000)
+        // Create paid invoices
+        List<Invoice> financedInvoices = IntStream.range(0, numbersPaidInvoices)
                 .mapToObj(i -> {
                     Invoice invoice = new Invoice();
                     invoice.setCreditor(creditor);
                     invoice.setValueInCents(100000); // Example invoice value
                     invoice.setMaturityDate(LocalDate.now().plusDays(30)); // Example maturity date
-                    invoice.setFinanced(true);
+                    invoice.setStatus(InvoiceStatus.FINANCED);
                     return invoice;
                 })
                 .collect(Collectors.toList());

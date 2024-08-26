@@ -1,19 +1,11 @@
 package lu.crx.financing.entities;
 
+import lombok.*;
+import lu.crx.financing.entities.enums.InvoiceStatus;
+
+import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
-import javax.persistence.Basic;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 /**
  * An invoice issued by the {@link Creditor} to the {@link Debtor} for shipped goods.
@@ -21,10 +13,13 @@ import lombok.ToString;
 @Entity
 @Getter
 @Setter
-@ToString
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "invoice", indexes = {
+        @Index(name = "idx_invoice_status", columnList = "status"),
+        @Index(name = "idx_invoice_maturity_date", columnList = "maturity_date")
+})
 public class Invoice implements Serializable {
 
     @Id
@@ -48,6 +43,7 @@ public class Invoice implements Serializable {
      * In case the invoice was financed, the money will be paid in full on this date to the purchaser of the invoice.
      */
     @Basic(optional = false)
+    @Column(name = "maturity_date", nullable = false)
     private LocalDate maturityDate;
 
     /**
@@ -57,10 +53,9 @@ public class Invoice implements Serializable {
     private long valueInCents;
 
     /**
-     * Indicates whether the invoice has been financed.
-     * This field is set to true after the invoice has been successfully financed,
-     * preventing it from being financed again in subsequent application runs.
+     * Indicates the current status of the invoice.
      */
-    @Basic(optional = false)
-    private boolean financed;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private InvoiceStatus status;
 }

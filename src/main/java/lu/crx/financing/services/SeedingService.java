@@ -1,15 +1,13 @@
 package lu.crx.financing.services;
 
-import java.time.LocalDate;
+import lombok.extern.slf4j.Slf4j;
+import lu.crx.financing.entities.*;
+import lu.crx.financing.entities.enums.InvoiceStatus;
+import org.springframework.stereotype.Service;
+
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
-import lombok.extern.slf4j.Slf4j;
-import lu.crx.financing.entities.Creditor;
-import lu.crx.financing.entities.Debtor;
-import lu.crx.financing.entities.Invoice;
-import lu.crx.financing.entities.Purchaser;
-import lu.crx.financing.entities.PurchaserFinancingSettings;
-import org.springframework.stereotype.Service;
+import java.time.LocalDate;
 
 @Slf4j
 @Service
@@ -25,10 +23,6 @@ public class SeedingService {
     private Debtor debtor2;
     private Debtor debtor3;
 
-    private Purchaser purchaser1;
-    private Purchaser purchaser2;
-    private Purchaser purchaser3;
-
     public SeedingService(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
@@ -37,7 +31,6 @@ public class SeedingService {
     public void seedMasterData() {
         log.info("Seeding master data");
 
-        // creditors
         creditor1 = Creditor.builder()
                 .name("Coffee Beans LLC")
                 .maxFinancingRateInBps(5)
@@ -56,7 +49,6 @@ public class SeedingService {
                 .build();
         entityManager.persist(creditor3);
 
-        // debtors
         debtor1 = Debtor.builder()
                 .name("Chocolate Factory")
                 .build();
@@ -72,8 +64,6 @@ public class SeedingService {
                 .build();
         entityManager.persist(debtor3);
 
-        // purchasers
-        // Создаем и сохраняем первого покупателя
         Purchaser purchaser1 = Purchaser.builder()
                 .name("RichBank")
                 .minimumFinancingTermInDays(10)
@@ -101,7 +91,6 @@ public class SeedingService {
                 .build();
         entityManager.persist(settings1_3);
 
-        // Создаем и сохраняем второго покупателя
         Purchaser purchaser2 = Purchaser.builder()
                 .name("FatBank")
                 .minimumFinancingTermInDays(12)
@@ -129,7 +118,6 @@ public class SeedingService {
                 .build();
         entityManager.persist(settings2_3);
 
-        // Создаем и сохраняем третьего покупателя
         Purchaser purchaser3 = Purchaser.builder()
                 .name("MegaBank")
                 .minimumFinancingTermInDays(8)
@@ -165,6 +153,7 @@ public class SeedingService {
         entityManager.persist(Invoice.builder()
                 .creditor(creditor1)
                 .debtor(debtor1)
+                .status(InvoiceStatus.NOT_FINANCED)
                 .valueInCents(200000)
                 .maturityDate(LocalDate.now().plusDays(52))
                 .build());
@@ -172,6 +161,7 @@ public class SeedingService {
         entityManager.persist(Invoice.builder()
                 .creditor(creditor1)
                 .debtor(debtor2)
+                .status(InvoiceStatus.NOT_FINANCED)
                 .valueInCents(800000)
                 .maturityDate(LocalDate.now().plusDays(33))
                 .build());
@@ -179,6 +169,7 @@ public class SeedingService {
         entityManager.persist(Invoice.builder()
                 .creditor(creditor1)
                 .debtor(debtor3)
+                .status(InvoiceStatus.NOT_FINANCED)
                 .valueInCents(600000)
                 .maturityDate(LocalDate.now().plusDays(43))
                 .build());
@@ -186,6 +177,7 @@ public class SeedingService {
         entityManager.persist(Invoice.builder()
                 .creditor(creditor1)
                 .debtor(debtor1)
+                .status(InvoiceStatus.NOT_FINANCED)
                 .valueInCents(500000)
                 .maturityDate(LocalDate.now().plusDays(80))
                 .build());
@@ -193,6 +185,7 @@ public class SeedingService {
         entityManager.persist(Invoice.builder()
                 .creditor(creditor1)
                 .debtor(debtor2)
+                .status(InvoiceStatus.NOT_FINANCED)
                 .valueInCents(6000000)
                 .maturityDate(LocalDate.now().plusDays(5))
                 .build());
@@ -200,6 +193,7 @@ public class SeedingService {
         entityManager.persist(Invoice.builder()
                 .creditor(creditor2)
                 .debtor(debtor3)
+                .status(InvoiceStatus.NOT_FINANCED)
                 .valueInCents(500000)
                 .maturityDate(LocalDate.now().plusDays(10))
                 .build());
@@ -207,6 +201,7 @@ public class SeedingService {
         entityManager.persist(Invoice.builder()
                 .creditor(creditor2)
                 .debtor(debtor1)
+                .status(InvoiceStatus.NOT_FINANCED)
                 .valueInCents(800000)
                 .maturityDate(LocalDate.now().plusDays(15))
                 .build());
@@ -214,6 +209,7 @@ public class SeedingService {
         entityManager.persist(Invoice.builder()
                 .creditor(creditor2)
                 .debtor(debtor2)
+                .status(InvoiceStatus.NOT_FINANCED)
                 .valueInCents(9000000)
                 .maturityDate(LocalDate.now().plusDays(30))
                 .build());
@@ -221,6 +217,7 @@ public class SeedingService {
         entityManager.persist(Invoice.builder()
                 .creditor(creditor2)
                 .debtor(debtor3)
+                .status(InvoiceStatus.NOT_FINANCED)
                 .valueInCents(450000)
                 .maturityDate(LocalDate.now().plusDays(32))
                 .build());
@@ -228,6 +225,7 @@ public class SeedingService {
         entityManager.persist(Invoice.builder()
                 .creditor(creditor2)
                 .debtor(debtor1)
+                .status(InvoiceStatus.NOT_FINANCED)
                 .valueInCents(800000)
                 .maturityDate(LocalDate.now().plusDays(11))
                 .build());
@@ -235,6 +233,7 @@ public class SeedingService {
         entityManager.persist(Invoice.builder()
                 .creditor(creditor3)
                 .debtor(debtor2)
+                .status(InvoiceStatus.NOT_FINANCED)
                 .valueInCents(3000000)
                 .maturityDate(LocalDate.now().plusDays(10))
                 .build());
@@ -242,6 +241,7 @@ public class SeedingService {
         entityManager.persist(Invoice.builder()
                 .creditor(creditor3)
                 .debtor(debtor3)
+                .status(InvoiceStatus.NOT_FINANCED)
                 .valueInCents(5000000)
                 .maturityDate(LocalDate.now().plusDays(14))
                 .build());
@@ -249,6 +249,7 @@ public class SeedingService {
         entityManager.persist(Invoice.builder()
                 .creditor(creditor3)
                 .debtor(debtor1)
+                .status(InvoiceStatus.NOT_FINANCED)
                 .valueInCents(9000000)
                 .maturityDate(LocalDate.now().plusDays(23))
                 .build());
@@ -256,6 +257,7 @@ public class SeedingService {
         entityManager.persist(Invoice.builder()
                 .creditor(creditor3)
                 .debtor(debtor2)
+                .status(InvoiceStatus.NOT_FINANCED)
                 .valueInCents(800000)
                 .maturityDate(LocalDate.now().plusDays(18))
                 .build());
@@ -263,6 +265,7 @@ public class SeedingService {
         entityManager.persist(Invoice.builder()
                 .creditor(creditor3)
                 .debtor(debtor3)
+                .status(InvoiceStatus.NOT_FINANCED)
                 .valueInCents(9000000)
                 .maturityDate(LocalDate.now().plusDays(50))
                 .build());

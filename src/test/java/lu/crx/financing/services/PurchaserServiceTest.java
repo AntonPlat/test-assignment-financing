@@ -3,29 +3,27 @@ package lu.crx.financing.services;
 import lu.crx.financing.entities.Creditor;
 import lu.crx.financing.entities.Purchaser;
 import lu.crx.financing.entities.PurchaserFinancingSettings;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class PurchaserSelectionServiceTest {
+public class PurchaserServiceTest {
 
-    private static FinancingCalculatorService financingCalculatorService;
+    private PurchaserService purchaserService;
 
-    private static PurchaserSelectionService purchaserSelectionService;
-
-    @BeforeAll
-    public static void initTest() {
-        financingCalculatorService = new FinancingCalculatorService();
-        purchaserSelectionService = new PurchaserSelectionService(financingCalculatorService);
+    @BeforeEach
+    public void init() {
+        FinancingCalculatorService financingCalculatorService = new FinancingCalculatorService();
+        purchaserService = new PurchaserService(financingCalculatorService, null);
     }
 
     @Test
     public void testSelectBestPurchaser() {
-        // Arrange
         Creditor creditor = new Creditor();
         creditor.setMaxFinancingRateInBps(500);
 
@@ -47,16 +45,13 @@ public class PurchaserSelectionServiceTest {
 
         long financingTermInDays = 15;
 
-        // Act
-        PurchaserFinancingSettings bestPurchaser = purchaserSelectionService.selectBestPurchaser(eligiblePurchasers, creditor, financingTermInDays);
+        PurchaserFinancingSettings bestPurchaser = purchaserService.selectBestPurchaser(eligiblePurchasers, creditor, financingTermInDays);
 
-        // Assert
         assertEquals(settings2, bestPurchaser);
     }
 
     @Test
     public void testSelectBestPurchaserNoEligiblePurchasers() {
-        // Arrange
         Creditor creditor = new Creditor();
         creditor.setMaxFinancingRateInBps(3);
 
@@ -67,46 +62,39 @@ public class PurchaserSelectionServiceTest {
         settings.setPurchaser(purchaser);
         settings.setAnnualRateInBps(6);
         settings.setCreditor(creditor);
-        // This rate is higher than the creditor's max rate
 
-        List<PurchaserFinancingSettings> eligiblePurchasers = Arrays.asList(settings);
+        List<PurchaserFinancingSettings> eligiblePurchasers = List.of(settings);
 
-        long financingTermInDays = 11;
+        long financingTermInDays = 9;
 
-        // Act
-        PurchaserFinancingSettings bestPurchaser = purchaserSelectionService.selectBestPurchaser(eligiblePurchasers, creditor, financingTermInDays);
+        PurchaserFinancingSettings bestPurchaser = purchaserService.selectBestPurchaser(eligiblePurchasers, creditor, financingTermInDays);
 
-        // Assert
         assertNull(bestPurchaser);
     }
 
     @Test
     public void testSelectBestPurchaserWithNoEligiblePurchasersDueToTerm() {
-        // Arrange
         Creditor creditor = new Creditor();
         creditor.setMaxFinancingRateInBps(500);
 
         Purchaser purchaser = new Purchaser();
-        purchaser.setMinimumFinancingTermInDays(20); // Minimum term is greater than financing term
+        purchaser.setMinimumFinancingTermInDays(20);
 
         PurchaserFinancingSettings settings = new PurchaserFinancingSettings();
         settings.setPurchaser(purchaser);
         settings.setAnnualRateInBps(100);
 
-        List<PurchaserFinancingSettings> eligiblePurchasers = Arrays.asList(settings);
+        List<PurchaserFinancingSettings> eligiblePurchasers = List.of(settings);
 
         long financingTermInDays = 15;
 
-        // Act
-        PurchaserFinancingSettings bestPurchaser = purchaserSelectionService.selectBestPurchaser(eligiblePurchasers, creditor, financingTermInDays);
+        PurchaserFinancingSettings bestPurchaser = purchaserService.selectBestPurchaser(eligiblePurchasers, creditor, financingTermInDays);
 
-        // Assert
         assertNull(bestPurchaser);
     }
 
     @Test
     public void testSelectBestPurchaserWithMultipleEligiblePurchasers() {
-        // Arrange
         Creditor creditor = new Creditor();
         creditor.setMaxFinancingRateInBps(500);
 
@@ -135,10 +123,8 @@ public class PurchaserSelectionServiceTest {
 
         long financingTermInDays = 15;
 
-        // Act
-        PurchaserFinancingSettings bestPurchaser = purchaserSelectionService.selectBestPurchaser(eligiblePurchasers, creditor, financingTermInDays);
+        PurchaserFinancingSettings bestPurchaser = purchaserService.selectBestPurchaser(eligiblePurchasers, creditor, financingTermInDays);
 
-        // Assert
         assertEquals(settings2, bestPurchaser);
     }
 }
